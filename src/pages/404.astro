@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import { NOT_FOUND } from '../config';
+---
+
+<Base title="Page not found" noindex>
+  <section class="page-hero" style="padding:110px 0">
+    <div class="wrap">
+      <h1>{NOT_FOUND.heading}</h1>
+      <p>{NOT_FOUND.text}</p>
+      <div class="hero-cta">
+        <a class="btn" href="/">Back to home</a>
+        <a href="/blog/"><strong>Read the blog</strong></a>
+      </div>
+    </div>
+  </section>
+</Base>

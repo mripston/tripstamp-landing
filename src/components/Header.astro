@@ -1,0 +1,18 @@
+---
+import { SITE, storeUrl } from '../config';
+---
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <img src="/favicon.png" alt="" width="36" height="36" />
+      {SITE.name}
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a class="hide-sm" href="/#features">Features</a>
+      <a class="hide-sm" href="/#how-it-works">How it works</a>
+      <a href="/blog/">Blog</a>
+      <a class="btn" href={storeUrl('header')} data-store="header" rel="noopener">Get the app</a>
+    </nav>
+  </div>
+</header>

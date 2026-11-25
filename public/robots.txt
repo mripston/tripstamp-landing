@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mripston.github.io/tripstamp-landing/sitemap-index.xml

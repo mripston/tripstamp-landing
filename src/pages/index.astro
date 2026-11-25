@@ -1,0 +1,158 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import StoreBadge from '../components/StoreBadge.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Faq from '../components/Faq.astro';
+import PostCard from '../components/PostCard.astro';
+import { SITE, HOME, storeUrl } from '../config';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => p.data.date <= new Date())
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const app: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: SITE.name,
+  operatingSystem: 'iOS',
+  applicationCategory: SITE.appCategory,
+  url: SITE.url,
+  downloadUrl: storeUrl('jsonld'),
+  image: `${SITE.url}/icon.png`,
+  description: SITE.description,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: SITE.company, url: SITE.companyUrl },
+};
+if (SITE.rating.count > 0) {
+  app.aggregateRating = { '@type': 'AggregateRating', ratingValue: SITE.rating.value, ratingCount: SITE.rating.count };
+}
+const jsonLd = [
+  app,
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: HOME.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+];
+---
+
+<Base jsonLd={jsonLd}>
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <span class="eyebrow">{HOME.eyebrow}</span>
+        <h1>{HOME.h1} <span class="hl">{HOME.highlight}</span>{HOME.h1End}</h1>
+        <p class="lead">{HOME.lead}</p>
+        <div class="hero-cta">
+          <StoreBadge placement="hero" rating />
+        </div>
+      </div>
+      <div class="hero-phones">
+        {HOME.heroShots.map((s, i) => (
+          <img src={`/screenshots/${s.file}.webp`} alt={s.alt} width="680" height="1363" fetchpriority={i === 0 ? 'high' : 'auto'} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="stats" aria-label="At a glance">
+    <div class="wrap">
+      {HOME.stats.map((s) => <div class="stat"><strong>{s.value}</strong><span>{s.label}</span></div>)}
+    </div>
+  </section>
+
+  <section class="section" id="how-it-works">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">How it works</span>
+        <h2>{HOME.stepsHeading}</h2>
+      </div>
+      <div class="grid c3">
+        {HOME.steps.map((s, i) => (
+          <div class="card">
+            <span class="step-num">0{i + 1}</span>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section soft" id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">{HOME.featuresEyebrow}</span>
+        <h2>{HOME.featuresHeading}</h2>
+        <p>{HOME.featuresLead}</p>
+      </div>
+      <div class="grid c3">
+        {HOME.features.map((f) => (
+          <div class="card">
+            <div class="icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={f.icon} /></svg>
+            </div>
+            <h3>{f.title}</h3>
+            <p>{f.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="screenshots">
+    <div class="section-head wrap">
+      <span class="eyebrow">A look inside</span>
+      <h2>See it in action</h2>
+    </div>
+    <div class="shots">
+      {HOME.shots.map((s) => (
+        <figure>
+          <img src={`/screenshots/${s.file}.webp`} alt={s.alt} width="800" height="1738" loading="lazy" />
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <section class="section soft">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow">{HOME.split.eyebrow}</span>
+        <h2>{HOME.split.heading}</h2>
+        <p>{HOME.split.text}</p>
+      </div>
+      <ul class="checks">
+        {HOME.split.checks.map((c) => <li>{c.title}<span>{c.text}</span></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="faq">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">FAQ</span>
+        <h2>Common questions</h2>
+      </div>
+      <Faq items={HOME.faq} />
+    </div>
+  </section>
+
+  {posts.length > 0 && (
+    <section class="section soft">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">From the blog</span>
+          <h2>{HOME.blogHeading}</h2>
+        </div>
+        <div class="grid c3">
+          {posts.map((post) => <PostCard post={post} heading="h3" />)}
+        </div>
+        <p style="text-align:center;margin:34px 0 0"><a href="/blog/"><strong>See all articles →</strong></a></p>
+      </div>
+    </section>
+  )}
+
+  <CtaBand />
+</Base>

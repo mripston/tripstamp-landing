@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { BLOG } from '../../config';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => p.data.date <= new Date())
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Base title={BLOG.title} description={BLOG.description}>
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow">{BLOG.eyebrow}</span>
+      <h1>{BLOG.heading}</h1>
+      <p>{BLOG.lead}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      {posts.length > 0 ? (
+        <div class="grid c3">{posts.map((post) => <PostCard post={post} />)}</div>
+      ) : (
+        <p style="text-align:center">The first articles are on their way.</p>
+      )}
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>

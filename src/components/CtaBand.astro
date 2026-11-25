@@ -1,0 +1,14 @@
+---
+import StoreBadge from './StoreBadge.astro';
+import { CTA } from '../config';
+interface Props { heading?: string; text?: string }
+const { heading = CTA.heading, text = CTA.text } = Astro.props;
+---
+
+<section class="cta-band">
+  <div class="wrap">
+    <h2>{heading}</h2>
+    <p>{text}</p>
+    <StoreBadge placement="cta-band" rating />
+  </div>
+</section>

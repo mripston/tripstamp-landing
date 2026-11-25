@@ -1,0 +1,21 @@
+---
+import { SITE, storeUrl } from '../config';
+interface Props { placement: string; rating?: boolean }
+const { placement, rating = false } = Astro.props;
+---
+
+<a class="store" href={storeUrl(placement)} data-store={placement} rel="noopener">
+  <img src="/appstore-badge.png" alt={`Download ${SITE.name} on the App Store`} width="158" height="54" />
+</a>
+{rating && (
+  <div class="rating">
+    {SITE.rating.count > 0 ? (
+      <>
+        <span class="stars" aria-hidden="true">★★★★★</span>
+        <span>{SITE.rating.value} on the App Store · {SITE.price}</span>
+      </>
+    ) : (
+      <span>{SITE.price} on the App Store · {SITE.platform}</span>
+    )}
+  </div>
+)}

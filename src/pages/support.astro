@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import Faq from '../components/Faq.astro';
+import { SITE, HOME } from '../config';
+---
+
+<Base title="Support" description={`Help and contact for the ${SITE.name} app.`}>
+  <div class="wrap narrow page-body prose">
+    <h1>{SITE.name} support</h1>
+    <p>
+      Email <a href={`mailto:${SITE.email}?subject=${encodeURIComponent(SITE.name + ' support')}`} data-contact="support">{SITE.email}</a>
+      and we will get back to you, usually within a day or two. It helps to include your iPhone model and iOS version.
+    </p>
+    <h2>Purchases and subscriptions</h2>
+    <p>
+      Purchases are handled by Apple. To restore a purchase on a new phone, open the app and tap Restore Purchases.
+      To cancel a subscription, open Settings on your iPhone, tap your name, then Subscriptions.
+      For refunds, use <a href="https://reportaproblem.apple.com" rel="noopener">reportaproblem.apple.com</a>.
+    </p>
+    <h2>Your data</h2>
+    <p>
+      Tripstamp has no account. Your data stays on your devices and in your own iCloud. You can export everything to JSON or CSV in the app at any time.
+      Read the <a href={SITE.privacyUrl} rel="noopener">Privacy Policy</a> and the <a href={SITE.termsUrl} rel="noopener">Terms of Use</a>.
+    </p>
+    <h2>Common questions</h2>
+    <Faq items={HOME.faq} />
+  </div>
+</Base>

@@ -1,0 +1,88 @@
+---
+import Base from '../layouts/Base.astro';
+import StoreBadge from '../components/StoreBadge.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Faq from '../components/Faq.astro';
+import { LANDING_PAGES, type LandingPage } from '../data/landing';
+import { SITE } from '../config';
+
+export function getStaticPaths() {
+  return LANDING_PAGES.map((page) => ({ params: { landing: page.slug }, props: { page } }));
+}
+
+const { page } = Astro.props as { page: LandingPage };
+const others = LANDING_PAGES.filter((p) => p.slug !== page.slug);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: page.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+];
+---
+
+<Base title={page.title} description={page.description} jsonLd={jsonLd}>
+  <section class="page-hero">
+    <div class="wrap">
+      <h1>{page.h1} <span class="hl">{page.highlight}</span></h1>
+      <p>{page.lead}</p>
+      <div class="hero-cta"><StoreBadge placement={`landing-${page.slug}`} rating /></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <div>
+        <h2>{page.introHeading}</h2>
+        {page.intro.map((p) => <p>{p}</p>)}
+        <ul class="checks" style="margin-top:26px">
+          {page.points.map((pt) => <li>{pt.title}<span>{pt.text}</span></li>)}
+        </ul>
+      </div>
+      <div class="shots" style="padding:0;justify-content:center;overflow:visible">
+        <figure style="width:320px">
+          <img src={`/screenshots/${page.shot}.webp`} alt={page.shotAlt} width="800" height="1738" />
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section soft">
+    <div class="wrap">
+      <div class="section-head"><h2>How it works</h2></div>
+      <div class="grid c3">
+        {page.steps.map((s, i) => (
+          <div class="card">
+            <span class="step-num">0{i + 1}</span>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head"><h2>Common questions</h2></div>
+      <Faq items={page.faq} />
+    </div>
+  </section>
+
+  {others.length > 0 && <section class="section soft">
+    <div class="wrap">
+      <div class="section-head"><h2>More ways to use {SITE.name}</h2></div>
+      <div class="grid c2">
+        {others.map((o) => (
+          <a class="post-card" href={`/${o.slug}/`}>
+            <h3>{o.nav}</h3>
+            <p style="margin:0">{o.description}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>}
+
+  <CtaBand />
+</Base>
